@@ -81,8 +81,8 @@ protected $fillable = [
     'email',
     'address',
     'city'
-    // 'country'
-    // 'postcode'
+    // 'country' - not included in this array
+    // 'postcode' - not included in this array
 ];
 ```
 
