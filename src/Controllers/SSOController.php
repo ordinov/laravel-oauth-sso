@@ -93,9 +93,6 @@ class SSOController extends Controller
         }
 
         $user = new User;
-        dd($user->getFillable());
-        
-        dd($response);
 
         return $response;
     }
