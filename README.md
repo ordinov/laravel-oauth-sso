@@ -18,9 +18,33 @@ Then select:
 
 > Provider: Ordinov\OauthSSO\OauthSSOServiceProvider
 
-This command will publish a new cofig/sso.php file.
+This command will publish a new `cofig/sso.php` file.
+
+You may need to edit the `User` model (App/Models/User.php) adding the `ExtendedSSO_User` trait, and extending the `$appends` property:
+```php
+<?php
+
+namespace App\Models;
+
+# < ..... >
+
+use Ordinov\OauthSSO\Traits\ExtendedSSO_User;
+
+class User extends Authenticatable
+{
+    use HasApiTokens, 
+        ExtendedSSO_User;
+
+    # < ..... >
+
+    // this will allow you to get all the user informations from SSO provider  with $user->sso_data;
+    protected $appends = ['sso_data'];
+
+}
+```
+
 ## Configuration:
-You will need to create the following lines into your .env file:
+Create the following lines into your .env file:
 
 ```bash
 SSO_SERVER_URL= [Remote SSO server URL, example https://auth.mydomain.com]

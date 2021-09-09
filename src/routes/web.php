@@ -13,6 +13,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/sso/callback', [SSOController::class, 'getCallback'])->name('sso.callback');
 
     // json
-    Route::get('/sso/user', [SSOController::class, 'getUserInformations'])->name('sso.user');
+    Route::get('/sso/user', [SSOController::class, 'getUserData'])->name('sso.user');
 
 });

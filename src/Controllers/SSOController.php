@@ -72,7 +72,7 @@ class SSOController extends Controller
         return $this->connectUser($request);
     }
 
-    public function getUserInformations(Request $request) {
+    public function getUserData(Request $request, $array = true) {
         $access_token = $request->session()->get('access_token');
         $guzzleClient = new Client([
             'base_uri' => config('sso.server'),
@@ -87,28 +87,29 @@ class SSOController extends Controller
                 ],
                 'query' => []
             ]);
-            $response = json_decode($response->getBody()->getContents(), true);
+            $response = json_decode($response->getBody()->getContents(), $array);
         } catch(\Exception $exception) {
             return $exception->getResponse()->getBody(true);
         }
-
-        $user = new User;
 
         return $response;
     }
 
     public function connectUser(Request $request)
     {
-        $userInformations = $this->getUserInformations($request);
+        $userData = $this->verifyUser($this->getUserData($request));
+        if ($userData instanceof \Illuminate\Http\RedirectResponse) {
+            return $userData;
+        }
 
         // get curret User from email or create a new one
-        $user = User::where('email', $userInformations['email'])->first() ?? new User;
+        $user = User::where('email', $userData['email'])->first() ?? new User;
         
         // update current user informations based on current User model class structure
         $fields = $user->getFillable();
         foreach ($fields as $field) {
-            if (isset($userInformations[$field])) {
-                $user->fill([$field => $userInformations[$field]]);
+            if (isset($userData[$field])) {
+                $user->fill([$field => $userData[$field]]);
             }
         }
 
@@ -123,5 +124,31 @@ class SSOController extends Controller
 
         // return to defined route (see /config/sso.php)
         return redirect(route(config('sso.redirect_authenticated_to_route')));
+    }
+
+    public function verifyUser(array $userData) {
+
+        // active verification
+        if (array_key_exists('is_active', $userData) && (bool)$userData['is_active'] === false) {
+            return redirect(route(config('sso.redirect_unauthenticated_to_route')));
+        }
+
+        $mustVerifyString = '';
+        foreach (['email','phone'] as $verificationKey) {
+            if ((bool)config('sso.user_must_verify_'.$verificationKey) && 
+                $userData[$verificationKey.'_verified_at'] === null) {
+                    $mustVerifyString .= $verificationKey;
+            }
+        }
+
+        if ($mustVerifyString !== '') {
+            return redirect(
+                config('sso.server')
+                .'/'.$mustVerifyString.'-verification'
+                .'?verified_redirect_to='.route('login')
+            );
+        }
+
+        return $userData;
     }
 }
