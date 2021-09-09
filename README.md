@@ -48,7 +48,7 @@ $userVerifiedSince = $user->sso_data->email_verified_at;
 $user_phone = $user->sso_data->phone;
 ```
 
-Still you can access actual db data, and confronting with remote provider data
+Still you can access actual db data, comparing with remote provider data
 ```php
 $db_email = $user->email;
 $provider_email = $user->sso_data->email;
