@@ -65,11 +65,16 @@ $user->sso_data->since;
 
 This package register some routes to redirect all the authentication capabilities to an external SSO provider implementing OAuth2.0 authentication.
 
-You will need just for the basic user informations in the `users` table in your application db, such as:
+You will just need for some basic user informations in the `users` table in your application db, such as:
 - id
 - email
 - laravel timestamps
 
+All the other informations will be stored in the authentication provider application.
+
+This will be pretty useful if you have more then one service and don't want to write all the authentication process every time. This will also avoid storing the same user multiple times so that the user will be able to log-in all your applications just being logged in the main sso provider. This is how SSO works, precisely.
+
+If you want to add some more informations into your local `users` table, just add the column names into the `$fillable` property, accordingly to Laravel best practices.
 ## Configuration:
 Create the following lines into your .env file:
 
