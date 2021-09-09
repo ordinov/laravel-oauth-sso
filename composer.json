@@ -1,0 +1,17 @@
+{
+    "name": "ordinov/oauth-sso",
+    "description": "Move laravel auth capabilities to external SSO provider",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ordinov",
+            "email": "giovanni@cellie.it"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "laravel/framework": ">=8.0",
+        "guzzlehttp/guzzle": ">=7.0"
+    }
+}
