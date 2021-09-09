@@ -54,7 +54,8 @@ $db_email = $user->email; // local db
 $provider_email = $user->sso_data->email; // from sso authentication
 ```
 
-DB data are stored in session and resynced every X minutes (defined in `config/sso.php` file, default `10`). You can get the last update timestamp accessing the `since` attribute;
+DB data are stored in session and resynced every X minutes (defined in `config/sso.php` file, default `10`). 
+You can get the last update timestamp accessing the `since` attribute;
 ```php
 $user->sso_data->since;
 ```
