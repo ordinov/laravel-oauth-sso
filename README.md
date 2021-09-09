@@ -77,13 +77,16 @@ This will be pretty useful if you have more then one service and don't want to w
 If you want to add some more informations into your local `users` table, just add the column names into the `$fillable` property, accordingly to Laravel best practices.
 
 ```php
-protected $fillable = [
-    'email',
-    'address',
-    'city'
-    // 'country' - not included in this array
-    // 'postcode' - not included in this array
-];
+class User
+{
+    protected $fillable = [
+        'email',
+        'address',
+        'city'
+        // 'country' - not included in this array
+        // 'postcode' - not included in this array
+    ];
+}
 ```
 
 ```php
