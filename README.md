@@ -61,6 +61,15 @@ You can get the last update timestamp accessing the `since` attribute;
 $user->sso_data->since;
 ```
 
+## How does it works:
+
+This package register some routes to redirect all the authentication capabilities to an external SSO provider implementing OAuth2.0 authentication.
+
+You will need just for the basic user informations in the `users` table in your application db, such as:
+- id
+- email
+- laravel timestamps
+
 ## Configuration:
 Create the following lines into your .env file:
 
