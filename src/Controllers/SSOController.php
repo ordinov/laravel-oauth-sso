@@ -50,7 +50,7 @@ class SSOController extends Controller
 
         $guzzleClient = new Client([
             'base_uri' => env('SSO_SERVER_URL'),
-            'verify' => false,
+            'verify' => config('sso.secure'),
         ]);
         
         try {
@@ -76,7 +76,7 @@ class SSOController extends Controller
         $access_token = $request->session()->get('access_token');
         $guzzleClient = new Client([
             'base_uri' => config('sso.server'),
-            'verify' => false,
+            'verify' => config('sso.secure'),
         ]);
         
         try {
@@ -92,6 +92,11 @@ class SSOController extends Controller
             return $exception->getResponse()->getBody(true);
         }
 
+        $user = new User;
+        dd($user->getFillable());
+        
+        dd($response);
+
         return $response;
     }
 
@@ -99,20 +104,27 @@ class SSOController extends Controller
     {
         $userInformations = $this->getUserInformations($request);
 
-        if ($user = User::where('email', $userInformations['email'])->first()) {
-            $user->update([
-                'full_name' => ($userInformations['first_name']. ' ' . $userInformations['last_name'])
-            ]);
-        } else {
-            $user = User::create([
-                'email' => $userInformations['email'],
-                'full_name' => ($userInformations['first_name']. ' ' . $userInformations['last_name'])
-            ]);
+        // get curret User from email or create a new one
+        $user = User::where('email', $userInformations['email'])->first() ?? new User;
+        
+        // update current user informations based on current User model class structure
+        $fields = $user->getFillable();
+        foreach ($fields as $field) {
+            if (isset($userInformations[$field])) {
+                $user->fill([$field => $userInformations[$field]]);
+            }
         }
 
+        // save current user informations
+        $user->save();
+
+        // login user
         Auth::login($user);
 
+        // create a "welcome" key in session for consuming alerts
         $request->session()->put('welcome', true);
+
+        // return to defined route (see /config/sso.php)
         return redirect(route(config('sso.redirect_authenticated_to_route')));
     }
 }
