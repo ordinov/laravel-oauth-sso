@@ -81,9 +81,9 @@ $user->sso_data->postcode; // excluded from local db
 
 SSO Provider data are stored in session and resynced every X minutes (defined in `config/sso.php` file, default = `10` minutes). 
 
-You can get the last update timestamp accessing the `since` attribute;
+You can get the last sync timestamp accessing the `synced_on` attribute;
 ```php
-$user->sso_data->since;
+$user->sso_data->synced_on; // Carbon object
 ```
 
 ```php
@@ -94,6 +94,41 @@ $user->sso_data->country;
 $user->sso_data->postcode;
 ```
 
+This package provies also a globally accessible `user()` function that returns the current logged in user
+This is an example of what you get with `user()->toJSON()`
+
+```json
+{
+    "id":5,
+    "email":"pippo@myemail.com",
+    "created_at":"2021-09-09T14:59:27.000000Z",
+    "updated_at":"2021-09-09T14:59:27.000000Z",
+    "sso_data":{
+        "id":1,
+        "is_business":0,
+        "companyname":"Pippo Franco S.r.l.",
+        "first_name":"Pippo",
+        "last_name":"Franco",
+        "email":"pippo@myemail.com",
+        "phone":"+39123456789",
+        "pec":null,
+        "address":"Via Di Qua",
+        "city":"Roma",
+        "province":"Roma",
+        "country":"IT",
+        "postcode":"00031",
+        "cf":null,
+        "piva":null,
+        "email_verified_at":"2021-09-09T15:05:37.000000Z",
+        "phone_verified_at":"2021-09-09T15:00:12.000000Z",
+        "is_active":1,
+        "created_at":"2021-09-03T17:55:05.000000Z",
+        "updated_at":"2021-09-09T15:05:37.000000Z",
+        "full_name":"Pippo Franco S.r.l.",
+        "synced_on":"2021-09-09T17:06:27.973070Z"
+    }
+}
+```
 ## Configuration:
 Create the following lines into your .env file:
 

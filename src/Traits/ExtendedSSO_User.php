@@ -10,7 +10,7 @@ trait ExtendedSSO_User
     public function getSsoDataAttribute() {
 
         if (Session::has('ssoAuthData')) {
-            if (Session::get('ssoAuthData')->since
+            if (isset(Session::get('ssoAuthData')->synced_on) && Session::get('ssoAuthData')->synced_on
                 ->gte(Carbon::now()->subMinutes(config('sso.refresh_user_data_after_minutes')))
             ) {
                 return Session::get('ssoAuthData');
@@ -18,7 +18,7 @@ trait ExtendedSSO_User
         }
 
         $userData = (new SSOController)->getUserData(Request(), false);
-        $userData->since = Carbon::now();
+        $userData->synced_on = Carbon::now();
         Session::forget('ssoAuthData');
         Session::put('ssoAuthData', $userData);
 
