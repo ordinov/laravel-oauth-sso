@@ -23,7 +23,7 @@ This command will publish a new cofig/sso.php file.
 You will need to create the following lines into your .env file:
 
 ```bash
-SSO_SERVER_URL= [SSO server URL]
+SSO_SERVER_URL= [Remote SSO server URL, example https://auth.mydomain.com]
 SSO_CLIENT_ID= [this application client_id]
 SSO_CLIENT_SECRET= [this application secret]
 ```
