@@ -37,7 +37,10 @@ class User extends Authenticatable
 
     # < ..... >
 
-    // this will lately allow you to get all the user informations from the SSO provider with $user->sso_data;
+    /*
+     * this will lately allow you to get all the user informations 
+     * from the SSO provider with $user->sso_data;
+     */
     protected $appends = ['sso_data'];
 
 }
