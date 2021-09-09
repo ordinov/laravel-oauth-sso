@@ -95,7 +95,7 @@ $user->sso_data->postcode;
 ```
 
 This package provies also a globally accessible `user()` function that returns the current logged in user
-This is an example of what you get with `user()->toJSON()`
+This is an example of what you get with `user()->toJSON()`:
 
 ```json
 {
