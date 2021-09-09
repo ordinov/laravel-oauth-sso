@@ -42,10 +42,12 @@ this will lately allow you to get all the user informations
 from the SSO provider with `$user->sso_data`.
 
 Example: 
+
 ```php
 $userVerifiedSince = $user->sso_data->email_verified_at;
 $user_phone = $user->sso_data->phone;
 ```
+
 Still you can access actual db data, and confronting with remote provider data
 ```php
 $db_email = $user->email;
