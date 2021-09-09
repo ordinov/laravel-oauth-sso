@@ -77,7 +77,7 @@ This will be pretty useful if you have more then one service and don't want to w
 If you want to add some more informations into your local `users` table, just add the column names into the `$fillable` property, accordingly to Laravel best practices.
 
 ```php
-class User
+class User extends Model
 {
     protected $fillable = [
         'email',
