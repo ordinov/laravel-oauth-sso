@@ -68,6 +68,7 @@ class User extends Authenticable
     ];
 }
 ```
+Attributes can be added later on, and they will be synced from the SSO provider during the next user auth request.
 
 Still you can access actual db data, comparing with remote provider data
 ```php
@@ -85,7 +86,6 @@ You can get the last update timestamp accessing the `since` attribute;
 $user->sso_data->since;
 ```
 
-
 ```php
 $user->email;
 $user->address;
@@ -93,8 +93,6 @@ $user->city;
 $user->sso_data->country;
 $user->sso_data->postcode;
 ```
-
-Attributes can be added later on, and they will be synced from the SSO provider during the next user auth request.
 
 ## Configuration:
 Create the following lines into your .env file:
