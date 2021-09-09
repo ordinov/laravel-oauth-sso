@@ -79,7 +79,7 @@ $user->sso_data->country; // excluded from local db
 $user->sso_data->postcode; // excluded from local db
 ```
 
-SSO Provider data are stored in session and resynced every X minutes (defined in `config/sso.php` file, default `10`). 
+SSO Provider data are stored in session and resynced every X minutes (defined in `config/sso.php` file, default = `10` minutes). 
 
 You can get the last update timestamp accessing the `since` attribute;
 ```php
