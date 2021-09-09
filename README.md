@@ -75,6 +75,27 @@ All the other informations will be stored in the authentication provider applica
 This will be pretty useful if you have more then one service and don't want to write all the authentication process every time. This will also avoid storing the same user multiple times so that the user will be able to log-in all your applications just being logged in the main sso provider. This is how SSO works, precisely.
 
 If you want to add some more informations into your local `users` table, just add the column names into the `$fillable` property, accordingly to Laravel best practices.
+
+```php
+protected $fillable = [
+    'email',
+    'address',
+    'city'
+    // 'country'
+    // 'postcode'
+];
+```
+
+```php
+$user->email;
+$user->address;
+$user->city;
+$user->sso_data->country;
+$user->sso_data->postcode;
+```
+
+Attributes can be added later on, and they will be synced from the SSO provider during the next user auth request.
+
 ## Configuration:
 Create the following lines into your .env file:
 
