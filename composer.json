@@ -13,5 +13,20 @@
     "require": {
         "laravel/framework": ">=8.0",
         "guzzlehttp/guzzle": ">=7.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Ordinov\\OauthSSO\\OauthSSOServiceProvider"
+            ],
+            "aliases": {
+                "OauthSSO": "Ordinov\\OauthSSO\\OauthSSOFacade"
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Ordinov\\OauthSSO\\": "src/"
+        }
     }
 }
