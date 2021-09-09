@@ -41,26 +41,6 @@ class User extends Authenticatable
 This will lately allow you to get all the user informations 
 from the SSO provider with `$user->sso_data`.
 
-Example: 
-
-```php
-$userVerifiedSince = $user->sso_data->email_verified_at;
-$user_phone = $user->sso_data->phone;
-```
-
-Still you can access actual db data, comparing with remote provider data
-```php
-$db_email = $user->email; // local db
-$provider_email = $user->sso_data->email; // from sso authentication
-```
-
-DB data are stored in session and resynced every X minutes (defined in `config/sso.php` file, default `10`). 
-
-You can get the last update timestamp accessing the `since` attribute;
-```php
-$user->sso_data->since;
-```
-
 ## How does it works:
 
 This package register some routes to redirect all the authentication capabilities to an external SSO provider implementing OAuth2.0 authentication.
@@ -88,6 +68,23 @@ class User extends Authenticable
     ];
 }
 ```
+
+Still you can access actual db data, comparing with remote provider data
+```php
+$user->email || $user->sso_data->email; // local db AND remote
+$user->address || $user->sso_data->address; // local db AND remote
+$user->city || $user->sso_data->city; // local db AND remote
+$user->sso_data->country; // excluded from local db
+$user->sso_data->postcode; // excluded from local db
+```
+
+SSO Provider data are stored in session and resynced every X minutes (defined in `config/sso.php` file, default `10`). 
+
+You can get the last update timestamp accessing the `since` attribute;
+```php
+$user->sso_data->since;
+```
+
 
 ```php
 $user->email;
