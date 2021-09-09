@@ -8,7 +8,7 @@ Use [composer](https://getcomposer.org/) to install the package.
 composer require ordinov/oauth-sso
 ```
 
-Publish the 'sso' configuration. This command will publish a new cofig/sso.php file.
+Request Laravel to publish the configuration.
 
 ```bash
 php artisan vendor:publish
@@ -18,6 +18,7 @@ Then select:
 
 > Provider: Ordinov\OauthSSO\OauthSSOServiceProvider
 
+This command will publish a new cofig/sso.php file.
 ## Configuration:
 You will need to create the following lines into your .env file:
 
