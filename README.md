@@ -50,8 +50,8 @@ $user_phone = $user->sso_data->phone;
 
 Still you can access actual db data, comparing with remote provider data
 ```php
-$db_email = $user->email;
-$provider_email = $user->sso_data->email;
+$db_email = $user->email; // local db
+$provider_email = $user->sso_data->email; // from sso authentication
 ```
 
 ## Configuration:
