@@ -35,6 +35,14 @@ class SSOController extends Controller
             'state' => $state,
             'registered_redirect_to' => route('login')
         ]);
+        dd([
+            'client_id' => config('sso.client_id'),
+            'redirect_uri' => route('sso.callback'),
+            'response_type' => 'code',
+            'scope' => 'view-user',
+            'state' => $state,
+            'registered_redirect_to' => route('login')
+        ]);
         return redirect('https://auth.cellie.tech/oauth/authorize?' . $query);
     }
 
