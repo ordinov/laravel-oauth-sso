@@ -41,7 +41,7 @@ class User extends Authenticatable
 This will lately allow you to get all the user informations 
 from the SSO provider with `$user->sso_data`.
 
-## How does it works:
+## How does it work:
 
 This package register some routes to redirect all the authentication capabilities to an external SSO provider implementing OAuth2.0 authentication.
 
