@@ -23,30 +23,26 @@ This command will publish a new `cofig/sso.php` file.
 You may need to edit the `User` model (App/Models/User.php) adding the `ExtendedSSO_User` trait, and extending the `$appends` property:
 ```php
 <?php
-
 namespace App\Models;
-
 # < ..... >
-
 use Ordinov\OauthSSO\Traits\ExtendedSSO_User;
 
 class User extends Authenticatable
 {
     use HasApiTokens, 
+        # add this:
         ExtendedSSO_User;
 
-    # < ..... >
-
-    /*
-     * this will lately allow you to get all the user informations 
-     * from the SSO provider with $user->sso_data.
-     * Example: $userVerifiedSince = $user->sso_data->email_verified_at;
-     */
+    # .. and this:
     protected $appends = ['sso_data'];
-
 }
 ```
 
+this will lately allow you to get all the user informations 
+from the SSO provider with `$user->sso_data`.
+```php
+Example: $userVerifiedSince = $user->sso_data->email_verified_at;
+```
 ## Configuration:
 Create the following lines into your .env file:
 
