@@ -18,7 +18,6 @@ Then select:
 
 > Provider: Ordinov\OauthSSO\OauthSSOServiceProvider
 
-$~$
 ## Configuration:
 You will need to create the following lines into your .env file:
 
@@ -28,6 +27,5 @@ SSO_CLIENT_ID= [this application client_id]
 SSO_CLIENT_SECRET= [this application secret]
 ```
 
-$~$
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
