@@ -17,4 +17,6 @@ return [
 
     'refresh_user_data_after_minutes' => 10,
 
+    'user_class' => '\App\Models\User'
+
 ];

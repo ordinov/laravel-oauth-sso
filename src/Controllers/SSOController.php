@@ -4,43 +4,34 @@ namespace Ordinov\OauthSSO\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use \GuzzleHttp\Client;
-use \App\Models\User;
 use Auth;
+use Ordinov\OauthSSO\OauthSSO;
 
 class SSOController extends Controller
 {
-    public function getSSOLoginPage(Request $request) {
-        return $this->getLogin($request);
-    }
 
-    public function getSSORegisterPage(Request $request) {
-        return $this->getLogin($request);
-    }
+    public $userClass = 'App\Models\User';
+    protected $sso;
 
-    public function doLogout(Request $request) {
-        Auth::logout();
-        return redirect(config('sso.server').'/logout?redirect_to='.route(config('sso.redirect_unauthenticated_to_route')));
+    public function __construct() {
+        $this->sso = new OauthSSO;
+        $this->userClass = $this->sso->config('user_class');
     }
 
     public function getLogin(Request $request)
     {
-        $request->session()->put('state', $state = Str::random(40));
-        $query = http_build_query([
-            'client_id' => config('sso.client_id'),
-            'redirect_uri' => route('sso.callback'),
-            'response_type' => 'code',
-            'scope' => 'view-user',
-            'state' => $state,
-            'registered_redirect_to' => route('login')
-        ]);
-        return redirect(config('sso.server').'/oauth/authorize?' . $query);
+        return $this->sso->redirect->toLogIn();
+    }
+
+    public function doLogout(Request $request) {
+        Auth::logout();
+        return $this->sso->redirect->toLogOut();
     }
 
     public function loggedOut(Request $request)
     {
-        return redirect(route(config('sso.redirect_unauthenticated_to_route')));
+        return $this->sso->redirect->unauthenticated();
     }
 
     public function getCallback(Request $request)
@@ -48,73 +39,43 @@ class SSOController extends Controller
         $state = $request->session()->pull('state');
         throw_unless(strlen($state) > 0 && $state = $request->state, \InvalidArgumentException::class);
 
-        $guzzleClient = new Client([
-            'base_uri' => env('SSO_SERVER_URL'),
-            'verify' => config('sso.secure'),
-        ]);
-        
-        try {
-            $response = $guzzleClient->post('oauth/token', [
-                'form_params' => [
-                    'grant_type' => 'authorization_code',
-                    'client_id' => config('sso.client_id'),
-                    'client_secret' => config('sso.client_secret'),
-                    'redirect_uri' => route('sso.callback'),
-                    'code' => $request->code
-                ]
-            ]);
-            $response = json_decode($response->getBody()->getContents(), true);
-        } catch(\Exception $exception) {
-            return json_encode($exception->getMessage());
+        $response = $this->sso->client->post('oauth/token', [
+            'grant_type' => 'authorization_code',
+            'client_id' => $this->sso->config('client_id'),
+            'client_secret' => $this->sso->config('client_secret'),
+            'redirect_uri' => $this->sso->route('callback'),
+            'code' => $request->code
+        ], false);
+
+        if (!isset($response->access_token)) {
+            return $response;
         }
 
-        $request->session()->put($response);
+        $request->session()->put(json_decode(json_encode($response), true));
+
         return $this->connectUser($request);
     }
 
-    public function getUserData(Request $request, $array = true) {
-        $access_token = $request->session()->get('access_token');
-        $guzzleClient = new Client([
-            'base_uri' => config('sso.server'),
-            'verify' => config('sso.secure'),
-        ]);
-        
-        try {
-            $response = $guzzleClient->get('api/user', [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => 'Bearer ' . $access_token
-                ],
-                'query' => []
-            ]);
-            $response = json_decode($response->getBody()->getContents(), $array);
-        } catch(\Exception $exception) {
-            return $exception->getResponse()->getBody(true);
-        }
-
-        return $response;
+    public function getUserData(Request $request) {
+        return $this->sso->provider->getUser();
     }
 
     public function connectUser(Request $request)
     {
-        $userData = $this->verifyUser($this->getUserData($request));
+        $userData = $this->verifyUser($this->sso->provider->getUser());
+
+        if ($userData === null) {
+            return $this->sso->redirect->unauthenticated();
+        }
         if ($userData instanceof \Illuminate\Http\RedirectResponse) {
             return $userData;
         }
 
         // get curret User from email or create a new one
-        $user = User::where('email', $userData['email'])->first() ?? new User;
+        $user = $this->userClass::where('sso_id', $userData->id)->first() ?? new $this->userClass;
         
-        // update current user informations based on current User model class structure
-        $fields = $user->getFillable();
-        foreach ($fields as $field) {
-            if (isset($userData[$field])) {
-                $user->fill([$field => $userData[$field]]);
-            }
-        }
-
-        // save current user informations
-        $user->save();
+        // update local db user and session
+        $sync = sso_sync_user_data($user, $userData);
 
         // login user
         Auth::login($user);
@@ -123,30 +84,28 @@ class SSOController extends Controller
         $request->session()->put('welcome', true);
 
         // return to defined route (see /config/sso.php)
-        return redirect(route(config('sso.redirect_authenticated_to_route')));
+        return $this->sso->redirect->authenticated();
     }
 
-    public function verifyUser(array $userData) {
+    public function verifyUser($userData) {
+
+        if (!$userData) { return null; }
 
         // active verification
-        if (array_key_exists('is_active', $userData) && (bool)$userData['is_active'] === false) {
-            return redirect(route(config('sso.redirect_unauthenticated_to_route')));
+        if (isset($userData->is_active) && (bool)$userData->is_active === false) {
+            return $this->sso->redirect->unauthenticated();
         }
 
-        $mustVerifyString = '';
-        foreach (['email','phone'] as $verificationKey) {
-            if ((bool)config('sso.user_must_verify_'.$verificationKey) && 
-                $userData[$verificationKey.'_verified_at'] === null) {
-                    $mustVerifyString .= $verificationKey;
+        $mustVerify = ['email','phone'];
+        foreach ($mustVerify as $k => $v) {
+            if (!(bool)$this->sso->config('user_must_verify_'.$v) 
+                || $userData->{$v.'_verified_at'}) {
+                    unset($mustVerify[$k]);
             }
         }
-
-        if ($mustVerifyString !== '') {
-            return redirect(
-                config('sso.server')
-                .'/'.$mustVerifyString.'-verification'
-                .'?verified_redirect_to='.route('login')
-            );
+        
+        if (!empty($mustVerify)) {
+            return $this->sso->redirect->toVerification($mustVerify);
         }
 
         return $userData;
