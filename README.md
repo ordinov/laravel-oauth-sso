@@ -130,7 +130,7 @@ This is an example of what you get with `user()->toJSON()`:
 }
 ```
 
-This is optimized for collections as well. When a collection of user is istanciated, you can call the `->withSSOData()` method on it. This will perform a single request to the SSO provider that returns the full informations for all the users in the collection, so that the client won't make a brand new request each time you get a `$user->sso_data` (for example in loops such as tables). Users data will be cached and retrieved when the `sso_data` attribute is called:
+This is optimized for `collections` as well. When a collection (`Illuminate\Support\Collection`) of user is istanciated, you can call the `->withSSOData()` method on it. This will perform a single request to the SSO provider that returns the full informations for all the users in the collection, so that the client won't make a brand new request each time you get a `$user->sso_data` (for example in loops such as tables). Users data will be cached and retrieved when the `sso_data` attribute is called:
 ```php
 // get a list of users from the database, and perform a request to the SSO provider to fetch all those users informations.
 $users = User::where('id', <= 100)->get()->withSSOData();
