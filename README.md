@@ -11,14 +11,17 @@ composer require ordinov/laravel-oauth-sso
 Request Laravel to publish the configuration.
 
 ```bash
-php artisan vendor:publish
+php artisan vendor:publish --provider="Ordinov\OauthSSO\OauthSSOServiceProvider"
 ```
 
-Then select:
+This command will publish a new `cofig/sso.php` file
 
-> Provider: Ordinov\OauthSSO\OauthSSOServiceProvider
+```bash
+php artisan migrate
+```
 
-This command will publish a new `cofig/sso.php` file.
+This command will add the `users.sso_id` colum right after `users.id`
+
 
 You may need to edit the `User` model (App/Models/User.php) adding the `ExtendedSSO_User` trait, and extending the `$appends` property:
 ```php
