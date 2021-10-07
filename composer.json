@@ -1,5 +1,5 @@
 {
-    "name": "ordinov/oauth-sso",
+    "name": "ordinov/laravel-oauth-sso",
     "description": "Move laravel auth capabilities to external SSO provider",
     "type": "project",
     "license": "MIT",
