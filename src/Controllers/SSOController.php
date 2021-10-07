@@ -71,8 +71,8 @@ class SSOController extends Controller
             return $userData;
         }
 
-        // get curret User from email or create a new one
-        $user = $this->userClass::where('sso_id', $userData->id)->first() ?? new $this->userClass;
+        // get curret User from id/email or create a new one
+        $user = $this->userClass::where('sso_id', $userData->id)->orWhere('email', $userData->email)->first() ?? new $this->userClass;
         
         // update local db user and session
         $sync = sso_sync_user_data($user, $userData);
