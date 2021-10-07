@@ -32,6 +32,8 @@ class OauthSSORedirect extends ConfiguredClass
             'response_type' => 'code',
             'scope' => 'view-user',
             'state' => $state,
+            'sso_origin' => $this->route('login'),
+            'sso_ip' => request()->ip(),
             'registered_redirect_to' => $this->route('login')
         ]);
         return redirect($this->config('server').'/oauth/authorize?' . $query);

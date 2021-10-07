@@ -1,7 +1,6 @@
 <?php
 
 namespace Ordinov\OauthSSO;
-
 class ConfiguredClass
 {
     public function config($string) {
