@@ -5,7 +5,7 @@
 Use [composer](https://getcomposer.org/) to install the package.
 
 ```bash
-composer require ordinov/oauth-sso
+composer require ordinov/laravel-oauth-sso
 ```
 
 Request Laravel to publish the configuration.
