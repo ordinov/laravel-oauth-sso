@@ -37,10 +37,6 @@ trait ExtendedSSO_User
      * Here we are with the magic method
      */
     public function __call($method, $params) {
-        // can't override default
-        if ( is_callable(['parent', '__call']) ) {
-            return parent::__call($method, $params);
-        }
         // get from sso is required
         $sso = new OauthSSO;
         foreach (config('sso.injected_sso_fields') as $fieldName) {
@@ -48,5 +44,7 @@ trait ExtendedSSO_User
                 return $sso->provider->getCachedUser($this)->{$fieldName};
             }
         }
+        // return default
+        return is_callable(['parent', '__call']) ? parent::__call($method, $params) : null;
     }
 }
