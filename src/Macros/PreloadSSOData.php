@@ -26,19 +26,7 @@ class PreloadSSOData
                 }
             }
 
-            // $ids = array_diff($this->pluck('sso_id')->toArray(), [ auth()->user()->sso_id ]);
-            $ids = $this->pluck('id', 'sso_id')->toArray();
-            $data = $sso->provider->getUsers(array_keys($ids));
-            $keyedData = [];
-            foreach ($data as $v) {
-                $keyedData[$ids[$v->id]] = $v;
-            }
-
-            if (cache()->has('ssoCollectionData')) {
-                $keyedData = $keyedData + cache('ssoCollectionData');
-            }
-            
-            cache()->put('ssoCollectionData', $keyedData);
+            $sso->provider->doCacheUsers($this->items);
 
             return $this;
         };

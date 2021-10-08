@@ -7,11 +7,30 @@ if (!function_exists('user')) {
     }
 }
 
+function sso_get_collection_cached_data() {
+    return cache()->has('ssoCollectionData') ? cache()->get('ssoCollectionData') : [];
+}
+
+function sso_user_expired($userData) {
+    return $userData->synced_on->lt(
+        now()->subMinutes(config('sso.refresh_user_data_after_minutes'))
+    );
+}
+
+function sso_cache_user($user, $userData) {
+    $cache = sso_get_collection_cached_data();
+    $cache[(int)$user->sso_id] = $userData;
+    cache()->put('ssoCollectionData', $cache);
+    sso_sync_user_data($user, $userData);
+    return $userData;
+}
+
+function sso_cache_users($users) {
+    cache()->put('ssoCollectionData', $users);
+}
+
 function sso_sync_user_data($user, $userData, $syncToDB = true) 
 {
-    $userData->synced_on = now();
-    Session::forget('ssoAuthData');
-    Session::put('ssoAuthData', $userData);
     if ($syncToDB) {
         $fields = $user->getFillable();
         foreach ($fields as $field) {
