@@ -35,9 +35,6 @@ class User extends Authenticatable
     use HasApiTokens, 
         # add this:
         ExtendedSSO_User;
-
-    # .. and this:
-    protected $appends = ['sso_data'];
 }
 ```
 

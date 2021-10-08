@@ -57,4 +57,5 @@ class OauthSSOProvider extends ConfiguredClass
         }
         return $return;
     }
+
 }

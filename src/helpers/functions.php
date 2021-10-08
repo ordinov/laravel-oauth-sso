@@ -12,7 +12,8 @@ function sso_get_collection_cached_data() {
 }
 
 function sso_user_expired($userData) {
-    return $userData->synced_on->lt(
+    $userData = (array)$userData;
+    return $userData['synced_on']->lt(
         now()->subMinutes(config('sso.refresh_user_data_after_minutes'))
     );
 }
