@@ -19,7 +19,7 @@ class OauthSSOProvider extends ConfiguredClass
                 return $data[(int)$user->sso_id];
             }
         }
-        return sso_cache_user($user, $this->getUser($id));
+        return sso_cache_user($user, $this->getUser($user->sso_id));
     }
 
     public function getUser($sso_id = null) {
