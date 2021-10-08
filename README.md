@@ -79,7 +79,26 @@ $user->sso_data->country; // excluded from local db
 $user->sso_data->postcode; // excluded from local db
 ```
 
-SSO Provider data are stored in session and resynced every X minutes (defined in `config/sso.php` file, default = `10` minutes). 
+To add more flexibility, there's a fast way to get SSO data direcly as model attributes. Look at the `config/sso.php` file:
+```php
+    /*
+     * Add fields you want to access directly ($user->companyname)
+     * Instead of using the 'sso_data' attribute ($user->sso_data->companyname)
+     */
+    'injected_sso_fields' => [
+        // companyname
+        // address
+    ],
+```
+
+Uncomment `companyname` from the array, for example, to access the `companyname` attribute coming from the SSO server with a simple:
+```php
+$user->companyname
+// same as $user->sso_data->companyname
+```
+Adding inexistent attributes will throw an exception, or, <u>much worse</u>, adding attributes that already exists in the Model (as `id`) could cause problems I don't even want to imagine.
+
+SSO Provider data are stored in cache and resynced every X minutes (defined in `config/sso.php` file, default = `10` minutes). 
 
 You can get the last sync timestamp accessing the `synced_on` attribute;
 ```php
