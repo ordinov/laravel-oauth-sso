@@ -105,14 +105,6 @@ You can get the last sync timestamp accessing the `synced_on` attribute;
 $user->sso_data->synced_on; // Carbon object
 ```
 
-```php
-$user->email;
-$user->address;
-$user->city;
-$user->sso_data->country;
-$user->sso_data->postcode;
-```
-
 This package provies also a globally accessible `user()` function that returns the current logged in user
 This is an example of what you get with `user()->toJSON()`:
 
