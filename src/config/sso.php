@@ -3,12 +3,17 @@
 return [
 
     /*
-     * SSO Server full URL (http/https://website.com)
+     * SSO Server PUBLIC full URL (http[s]://website.com)
      */
-    'server' => env('SSO_SERVER_URL'),
+    'server_url' => env('SSO_SERVER_URL'),
 
     /*
-     * Requests made over https or http
+     * SSO Server PRIVATE/internal full URL (http[s]://10.10.12.99) - default = "server_url" value
+     */
+    'server_private_url' => env('SSO_PRIVATE_URL', false),
+
+    /*
+     * Requests made over ssl if true
      */
     'secure' => false,
 

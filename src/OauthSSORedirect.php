@@ -36,13 +36,13 @@ class OauthSSORedirect extends ConfiguredClass
             'sso_ip' => request()->ip(),
             'registered_redirect_to' => $this->route('login')
         ]);
-        return redirect($this->config('server').'/oauth/authorize?' . $query);
+        return redirect($this->config('server_url').'/oauth/authorize?' . $query);
     }
 
     public function toLogOut() : \Illuminate\Http\RedirectResponse
     {
         return redirect(
-            $this->config('server')
+            $this->config('server_url')
             .'/logout?redirect_to='
             .route( $this->config('redirect_unauthenticated_to_route') )
         );
@@ -52,7 +52,7 @@ class OauthSSORedirect extends ConfiguredClass
     {
         if (empty($mustVerify)) { return redirect($this->route('login')); }
         return redirect(
-            $this->config('server')
+            $this->config('server_url')
             .'/'.implode('',$mustVerify).'-verification'
             .'?verified_redirect_to='.$this->route('login')
         );

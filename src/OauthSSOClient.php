@@ -9,7 +9,7 @@ class OauthSSOClient extends ConfiguredClass
     public function __construct() {
         $this->token = session()->get('access_token');
         $this->guzzleConstructor = [
-            'base_uri' => $this->config('server'),
+            'base_uri' => $this->config('server_private_url'),
             'verify' => $this->config('secure'),
             'http_errors' => false
         ];
