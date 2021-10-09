@@ -10,7 +10,7 @@ class ConfiguredClass
 
     private function transformConfigKey($key) {
         // private url default to server_url
-        if ($key === 'server_private_url' && empty(config($key))) {
+        if ($key === 'server_private_url' && empty(config('sso.'.$key))) {
             return 'server_url';
         }
         return $key;
