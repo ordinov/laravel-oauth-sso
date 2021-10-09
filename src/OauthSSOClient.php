@@ -26,10 +26,16 @@ class OauthSSOClient extends ConfiguredClass
         ];
     }
 
+    public function getUnauthHeaders() {
+        return [
+            'Accept' => 'application/json'
+        ];
+    }
+
     public function get($url, $params = [], $withAuthToken = true) {
         $guzzleClient = new Client($this->guzzleConstructor);
         $response = $guzzleClient->get($url, [
-            'headers' => $withAuthToken ? $this->getAuthHeaders() : [],
+            'headers' => $withAuthToken ? $this->getAuthHeaders() : $this->getUnauthHeaders(),
             'query' => $params
         ]);
         $responseData = json_decode($response->getBody()->getContents());
@@ -47,7 +53,7 @@ class OauthSSOClient extends ConfiguredClass
     public function post($url, $params = [], $withAuthToken = true) {
         $guzzleClient = new Client($this->guzzleConstructor);
         $response = $guzzleClient->post($url, [
-            'headers' => $withAuthToken ? $this->getAuthHeaders() : [],
+            'headers' => $withAuthToken ? $this->getAuthHeaders() : $this->getUnauthHeaders(),
             'form_params' => $params
         ]);
         $responseData = json_decode($response->getBody()->getContents());
