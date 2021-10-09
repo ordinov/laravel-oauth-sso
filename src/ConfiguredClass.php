@@ -13,7 +13,7 @@ class ConfiguredClass
         if ($key === 'server_private_url' && empty(config($key))) {
             return 'server_url';
         }
-        return $string;
+        return $key;
     }
 
     public function route($string) {
