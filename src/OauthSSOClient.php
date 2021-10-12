@@ -44,6 +44,7 @@ class OauthSSOClient extends ConfiguredClass
             if (isset($responseData->message) && $responseData->message === 'Unauthenticated.') {
                 auth()->logout();
                 Session()->flush();
+                throw new \Illuminate\Auth\AuthenticationException($responseData->message);
             }
             throw new \Exception($responseData->message);
         }
