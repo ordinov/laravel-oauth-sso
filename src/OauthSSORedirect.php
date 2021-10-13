@@ -30,7 +30,6 @@ class OauthSSORedirect extends ConfiguredClass
             'client_id' => $this->config('client_id'),
             'redirect_uri' => $this->route('callback'),
             'response_type' => 'code',
-            'scope' => 'view-user',
             'state' => $state,
             'sso_origin' => $this->route('login'),
             'sso_ip' => request()->ip(),
